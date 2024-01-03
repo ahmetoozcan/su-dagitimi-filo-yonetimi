@@ -1,39 +1,48 @@
-import { useRouteError } from "react-router-dom";
-import { Box, Typography } from "@mui/material";
+import React from 'react';
 import { styled } from "@mui/system";
+import { Typography, Button } from '@mui/material';
 
-const ErrorPageContainer = styled(Box)({
-    textAlign: "center",
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: "10px",
-    position: "relative",
-    height: "80vh", // Set the height of the container to full viewport height
-});
+const useStyles = styled((theme) => ({
+    root: {
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: '100vh',
+        backgroundColor: theme.palette.background.default,
+    },
+    title: {
+        marginBottom: theme.spacing(2),
+    },
+    message: {
+        marginBottom: theme.spacing(4),
+    },
+    button: {
+        marginTop: theme.spacing(2),
+    },
+}));
 
-const ErrorTitle = styled(Typography)({
-    fontSize: "24px",
-    fontWeight: "bold",
-});
-
-const ErrorMessage = styled(Typography)({
-    fontStyle: "italic",
-});
-
-export default function ErrorScreen() {
-    const error = useRouteError();
+const ErrorScreen = () => {
+    const classes = useStyles();
 
     return (
-        <ErrorPageContainer id="error-page">
-            <ErrorTitle variant="h1">Oops!</ErrorTitle>
-            <Typography variant="body1">
-                Üzgünüz, bilinmeyen bir hata oluştu.
+        <div className={classes.root}>
+            <Typography variant="h4" className={classes.title}>
+                Oops! Something went wrong.
             </Typography>
-            <ErrorMessage variant="body1">
-                <i>{error.statusText || error.message}</i>
-            </ErrorMessage>
-        </ErrorPageContainer>
+            <Typography variant="body1" className={classes.message}>
+                We apologize for the inconvenience. Please try again later.
+            </Typography>
+            <Button
+                variant="contained"
+                color="primary"
+                className={classes.button}
+                onClick={() => window.location.reload()}
+            >
+                Refresh
+            </Button>
+        </div>
     );
-}
+};
+
+export default ErrorScreen;
