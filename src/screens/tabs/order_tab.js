@@ -1,10 +1,48 @@
-import React, { useState } from 'react';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Grid, Typography, Collapse, Box } from '@mui/material';
-import { BarChart, CartesianGrid, XAxis, YAxis, Tooltip, Legend, Bar } from 'recharts';
+import React, { useState, useEffect } from 'react';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Grid, Box, Button } from '@mui/material';
+import { DatePicker } from '@mui/x-date-pickers';
+import dayjs from 'dayjs';
 
-const data = [
+
+const originalData = [
     {
         id: 1,
+        address: '123 Main St',
+        location: '40.7128° N, 74.0060° W',
+        orderTime: '2022-01-01 10:00 AM',
+        deliveryWindow: '10:00 AM - 12:00 PM',
+        productName: 'Ürün A',
+        quantity: 2,
+        deliveryTime: '2022-01-01 11:30 AM',
+        deliveryVehicle: 'Araç 1',
+        status: 'Teslim Edildi'
+    },
+    {
+        id: 2,
+        address: '123 Main St',
+        location: '40.7128° N, 74.0060° W',
+        orderTime: '2022-01-01 10:00 AM',
+        deliveryWindow: '10:00 AM - 12:00 PM',
+        productName: 'Ürün A',
+        quantity: 2,
+        deliveryTime: '2022-01-01 11:30 AM',
+        deliveryVehicle: 'Araç 1',
+        status: 'Teslim Edildi'
+    },
+    {
+        id: 3,
+        address: '123 Main St',
+        location: '40.7128° N, 74.0060° W',
+        orderTime: '2022-01-01 10:00 AM',
+        deliveryWindow: '10:00 AM - 12:00 PM',
+        productName: 'Ürün A',
+        quantity: 2,
+        deliveryTime: '2022-01-01 11:30 AM',
+        deliveryVehicle: 'Araç 1',
+        status: 'Teslim Edildi'
+    },
+    {
+        id: 4,
         address: '123 Main St',
         location: '40.7128° N, 74.0060° W',
         orderTime: '2022-01-01 10:00 AM',
@@ -18,21 +56,46 @@ const data = [
 ];
 
 const OrderTab = () => {
-    const [expandedRow, setExpandedRow] = useState(null);
+    const [[startingDate, endingDate], setDates] = useState([new Date(Date.now() - 7 * 24 * 60 * 60 * 1000), new Date()]);
+    const [data, setFilteredData] = useState([]);
 
-    const handleRowClick = (id) => {
-        setExpandedRow(expandedRow === id ? null : id);
-    };
+    useEffect(() => {
+        const filterData = () => {
+            const filteredData = originalData.filter(item => {
+                const itemDate = dayjs(item.date, 'MM.DD.YYYY').toDate();
+                return itemDate >= startingDate && itemDate <= endingDate;
+            });
+
+            setFilteredData(filteredData);
+        };
+        filterData();
+    }, [startingDate, endingDate]);
+
+    const handleStartingDateChange = (newDate) => {
+        setDates([new Date(newDate).toLocaleDateString(), endingDate]);
+    }
+
+    const handleEndingDateChange = (newDate) => {
+        setDates([startingDate, new Date(newDate).toLocaleDateString()]);
+    }
 
 
 
     return (
         <>
             <Grid item xs={12}>
-                <Typography variant="h4" gutterBottom>
-                    Siparişler
-                </Typography>
+                <Grid container justifyContent="center">
+                    <DatePicker label="Başlangıç Zamanı" defaultValue={dayjs(new Date(Date.now() - 7 * 24 * 60 * 60 * 1000))} disableFuture={true} onChange={(newDate) => handleStartingDateChange(newDate)} />
+                    <Box style={{ width: '20px' }} />
+                    <DatePicker label="Bitiş Zamanı" defaultValue={dayjs(new Date())} disableFuture={true} onChange={(newDate) => handleEndingDateChange(newDate)} />
+                    <Box style={{ width: '20px' }} />
+                    <Box style={{ width: '20px' }} />
+                    <Box display="flex" justifyContent="flex-end">
+                        <Button variant="contained" color="primary">Dışarıya Aktar</Button>
+                    </Box>
+                </Grid>
             </Grid>
+            <Box height={20} />
             <TableContainer component={Paper}>
                 <Table>
                     <TableHead>
@@ -52,7 +115,7 @@ const OrderTab = () => {
                     <TableBody>
                         {data.map((order) => (
                             <React.Fragment key={order.id}>
-                                <TableRow onClick={() => handleRowClick(order.id)}>
+                                <TableRow>
                                     <TableCell>{order.id}</TableCell>
                                     <TableCell>{order.address}</TableCell>
                                     <TableCell>{order.location}</TableCell>
@@ -65,22 +128,7 @@ const OrderTab = () => {
                                     <TableCell>{order.status}</TableCell>
                                 </TableRow>
                                 <TableRow>
-                                    <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={8}>
-                                        <Collapse in={expandedRow === order.id} timeout="auto" unmountOnExit>
-                                            <Box margin={1}>
-                                                <BarChart width={400} height={300} data={[order]}>
-                                                    <CartesianGrid strokeDasharray="3 3" />
-                                                    <XAxis dataKey="plate" />
-                                                    <YAxis />
-                                                    <Tooltip />
-                                                    <Legend />
-                                                    <Bar dataKey="maxLoadCapacity" fill="#8884d8" name='Maksimum Yük Kapasitesi' />
-                                                    <Bar dataKey="maxEnginePower" fill="#82ca9d" name='Maksimum Motor Gücü' />
-                                                    <Bar dataKey="maxSpeed" fill="#ffc658" name='Maksimum Hız' />
-                                                </BarChart>
-                                            </Box>
-                                        </Collapse>
-                                    </TableCell>
+                                    <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={8} />
                                 </TableRow>
                             </React.Fragment>
                         ))}

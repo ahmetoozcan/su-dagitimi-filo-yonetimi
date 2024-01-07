@@ -58,7 +58,9 @@ const SidebarTabs = () => {
     };
 
     const handleExit = () => {
-        setUser(null);
+        setTimeout(() => {
+            setUser(null);
+        }, 1000);
     };
 
     return (

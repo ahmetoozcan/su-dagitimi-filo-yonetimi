@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Grid, Paper, Typography, Select, MenuItem, Box, Divider, Card, CardContent, CardHeader } from '@mui/material';
 import { BarChart, Bar, CartesianGrid, XAxis, YAxis, Tooltip, Legend } from 'recharts';
+import axios from 'axios';
 
 const drivers = [
     { id: 1, name: 'Sürücü 1', surname: 'Soyad 1', age: 30, idNumber: '12345678901', startDate: '2020-01-01', status: 'Dağıtıma Hazır' },
@@ -8,21 +9,34 @@ const drivers = [
     // Add more drivers as needed
 ];
 
-const data = [
+const originalData = [
     { name: 'Sürücü 1', successfulOrders: 80, workingHours: 8, fuelConsumed: 10, averageSpeed: 60 },
     { name: 'Sürücü 2', successfulOrders: 70, workingHours: 7, fuelConsumed: 9, averageSpeed: 55 },
-    // Add more data points as needed
+    // Add more originalData points as needed
 ];
 
 
 const DriverTab = () => {
+    const [data, setData] = useState([]);
     const [selectedDriver, setSelectedDriver] = useState(drivers[0]);
 
     const handleDriverChange = (event) => {
         setSelectedDriver(drivers.find(driver => driver.id === event.target.value));
     };
 
-    const selectedDriverData = data.find(d => d.name === selectedDriver.name);
+    useEffect(() => {
+        axios
+            .get('http://localhost:5000/driver')
+            .then((response) => {
+                console.log(response.data);
+                setData(response.data);
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+    }, []);
+
+    const selectedDriverData = originalData.find(d => d.name === selectedDriver.name);
     return (
         <Grid container spacing={2}>
 
@@ -97,16 +111,16 @@ const DriverTab = () => {
                         <Paper>
                             <Box p={2}>
                                 <Typography variant="h6">Peformans Analizi</Typography>
-                                <BarChart width={500} height={300} data={[selectedDriverData]}>
-                                    <Bar dataKey="successfulOrders" fill="#8884d8" name='Başarılı Siparişler' />
-                                    <Bar dataKey="workingHours" fill="#82ca9d" name='Çalışma Saati' />
-                                    <Bar dataKey="fuelConsumed" fill="#ffc658" name='Tüketilen Enerji' />
-                                    <Bar dataKey="averageSpeed" fill="#72f276" name='Averaj Hız' />
-                                    <CartesianGrid stroke="#ccc" />
+                                <BarChart width={500} height={300} originalData={[selectedDriverData]}>
+                                    <CartesianGrid strokeDasharray="3 3" />
                                     <XAxis dataKey="name" />
                                     <YAxis />
                                     <Tooltip />
                                     <Legend />
+                                    <Bar dataKey="successfulOrders" fill="#8884d8" name='Başarılı Siparişler' />
+                                    <Bar dataKey="workingHours" fill="#82ca9d" name='Çalışma Saati' />
+                                    <Bar dataKey="fuelConsumed" fill="#ffc658" name='Tüketilen Enerji' />
+                                    <Bar dataKey="averageSpeed" fill="#72f276" name='Averaj Hız' />
                                 </BarChart>
                             </Box>
                         </Paper>

@@ -41,7 +41,6 @@ const CreateRoutineMachineLayer = (props) => {
         setRoute(route);
     };
 
-
     const instance = L.Routing.control({
         waypoints: waypoints.map(wp => L.latLng(wp.lat, wp.lng)),
         createMarker: function (i, wp, nWps) {
@@ -95,6 +94,7 @@ const CreateRoutineMachineLayer = (props) => {
         lineOptions: {
             styles: [{ color: color, weight: 4 }],
         },
+        autoRoute: true,
         show: false,
         addWaypoints: false,
         routeWhileDragging: false,

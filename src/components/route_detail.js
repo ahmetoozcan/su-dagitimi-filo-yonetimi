@@ -7,9 +7,9 @@ function formatTime(seconds) {
     const remainingSeconds = Math.floor(seconds % 60);
 
 
-    return hours === 0 ? `${minutes.toString().padStart(2, '0')} Minutes ${remainingSeconds.toString().padStart(2, '0')} Seconds` :
-        minutes === 0 ? `${remainingSeconds.toString().padStart(2, '0')} Seconds` :
-            `${hours.toString().padStart(2, '0')} Hours ${minutes.toString().padStart(2, '0')} Minutes ${remainingSeconds.toString().padStart(2, '0')} Seconds`;
+    return hours === 0 ? `${minutes.toString().padStart(2, '0')} Dakika ${remainingSeconds.toString().padStart(2, '0')} Saniye` :
+        minutes === 0 ? `${remainingSeconds.toString().padStart(2, '0')} Saniye` :
+            `${hours.toString().padStart(2, '0')} Saat ${minutes.toString().padStart(2, '0')} Dakika ${remainingSeconds.toString().padStart(2, '0')} Saniye`;
 }
 
 

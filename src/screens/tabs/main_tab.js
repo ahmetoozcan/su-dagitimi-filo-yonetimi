@@ -19,7 +19,7 @@ const MainTab = () => {
             <Grid container spacing={1}>
                 <Grid item xs={3} style={{ maxHeight: '78vh', overflow: 'auto' }}>
                     <Typography variant="h4" gutterBottom>
-                        {user == null ? 'Kullanıcı' : 'Hoşgeldin, ' + user.firstName + " " + user.lastName}
+                        {'Hoşgeldin, ' + user.firstName + " " + user.lastName + " " + user.type}
                     </Typography>
                     <OrderBox />
                     <OrderBox />
