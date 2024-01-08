@@ -52,6 +52,7 @@ const MainContent = styled('main')(({ theme }) => ({
 const SidebarTabs = () => {
     const [tabValue, setTabValue] = useState(0);
     const { user, setUser } = useContext(UserContext);
+    const { setRoute } = useContext(UserContext);
 
     const handleTabChange = (event, newValue) => {
         setTabValue(newValue);
@@ -60,7 +61,9 @@ const SidebarTabs = () => {
     const handleExit = () => {
         setTimeout(() => {
             setUser(null);
+            setRoute(null);
         }, 1000);
+
     };
 
     return (
@@ -85,7 +88,7 @@ const SidebarTabs = () => {
                             >
                                 <Tab icon={<img src={CompassIcon} height={32} alt='Compass' />} label=<Typography fontSize={12} fontWeight={700}>ANA EKRAN</Typography> />
 
-                                {user.type === 'fleetManager' && (
+                                {user.type === 'filoyöneticisi' && (
                                     [
                                         <Tab key={1} icon={<img src={DriverIcon} height={32} alt='Driver' />} label={<Typography fontSize={12} fontWeight={700}>SÜRÜCÜ</Typography>} value={1} />,
                                         <Tab key={2} icon={<img src={CarIcon} height={32} alt='Car' />} label={<Typography fontSize={12} fontWeight={700}>ARAÇ</Typography>} value={2} />,

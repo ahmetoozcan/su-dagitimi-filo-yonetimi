@@ -43,11 +43,20 @@ const RouteDetails = ({ route }) => {
                                 </Typography>
                                 <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
                                     <div>
-                                        {route.inputWaypoints.map((waypoint, index) => (
-                                            <Typography key={index} variant="body1" component="li">
-                                                {index + 1}. Sipariş: Enlem: {waypoint.latLng.lat}, Boylam: {waypoint.latLng.lng}
-                                            </Typography>
-                                        ))}
+                                        {route.inputWaypoints.map((waypoint, index) => {
+                                            if (index === 0) return (
+                                                <Typography key={index} variant="body1" component="li">
+                                                    Araç: Enlem: {waypoint.latLng.lat}, Boylam: {waypoint.latLng.lng}
+                                                </Typography>
+                                            );
+
+                                            return (
+                                                <Typography key={index} variant="body1" component="li">
+                                                    {index}. Sipariş: Enlem: {waypoint.latLng.lat}, Boylam: {waypoint.latLng.lng}
+                                                </Typography>
+                                            )
+
+                                        })}
                                     </div>
                                 </Box>
                             </CardContent>

@@ -14,29 +14,12 @@ import {
     Box,
 } from '@mui/material';
 import axios from 'axios';
-const data = [
-    { id: 1, plate: '34 ABC 123', maxLoadCapacity: 1000, maxEnginePower: 200, maxSpeed: 120, batteryCapacity: 500, weight: 1500, nextMaintenanceDate: "06.01.2024" },
-    { id: 2, plate: '34 DEF 456', maxLoadCapacity: 1200, maxEnginePower: 220, maxSpeed: 130, batteryCapacity: 550, weight: 1600, nextMaintenanceDate: "06.01.2024" },
-    // Add more cars as needed
-];
-
-const maintenanceData = [
-    { id: 1, plate: '34 ABC 123', date: '01.10.2023', cost: 315 },
-    { id: 1, plate: '34 ABC 123', date: '01.11.2023', cost: 461 },
-    { id: 1, plate: '34 ABC 123', date: '01.12.2023', cost: 400 },
-    { id: 1, plate: '34 ABC 123', date: '01.01.2024', cost: 786 },
-    { id: 2, plate: '34 DEF 456', date: '01.12.2023', cost: 221 },
-    { id: 2, plate: '34 DEF 456', date: '01.10.2023', cost: 322 },
-    { id: 2, plate: '34 DEF 456', date: '01.11.2023', cost: 540 },
-    { id: 2, plate: '34 DEF 456', date: '01.09.2023', cost: 380 },
-    { id: 2, plate: '34 DEF 456', date: '01.01.2024', cost: 417 },
-    // Add more maintenance records as needed
-];
+import CustomTooltip from '../../components/car_tool_tip';
 
 
 const CarTab = () => {
     const [data, setData] = useState([]);
-
+    const [maintenanceData, setMaintenanceData] = useState([]);
     const [expandedRow, setExpandedRow] = useState(null);
 
     const handleRowClick = (id) => {
@@ -48,6 +31,18 @@ const CarTab = () => {
             .get('http://localhost:5000/vehicle')
             .then((response) => {
                 setData(response.data);
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+
+        axios
+            .get('http://localhost:5000/vehicle/maintenance')
+            .then((response) => {
+                response.data.forEach((maintenance) => {
+                    maintenance.tarih = maintenance.tarih.substring(0, 10);
+                });
+                setMaintenanceData(response.data);
             })
             .catch((error) => {
                 console.error(error);
@@ -93,15 +88,15 @@ const CarTab = () => {
                                         <Collapse in={expandedRow === car.araç_id} timeout="auto" unmountOnExit>
                                             <Box margin={1}>
                                                 <LineChart width={800} height={300} data={maintenanceData.filter((maintenance) => {
-                                                    return maintenance.id === car.id;
+                                                    return maintenance.araç_id === car.araç_id;
                                                 })}>
                                                     <CartesianGrid strokeDasharray="3 3" />
-                                                    <XAxis dataKey="date">
+                                                    <XAxis dataKey="tarih">
                                                         <Label value="Tarih" offset={-3} position="insideBottom" />
                                                     </XAxis>
                                                     <YAxis />
-                                                    <Tooltip />
-                                                    <Line dataKey="cost" fill="#8884d8" name="Ücret" />
+                                                    <Tooltip content={<CustomTooltip />} />
+                                                    <Line dataKey="maliyet" fill="#8884d8" name="Maliyet" />
                                                 </LineChart>
                                             </Box>
                                         </Collapse>

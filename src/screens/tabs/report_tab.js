@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Grid, Card, CardContent, Typography, Box, FormControl, Select, MenuItem, Button } from '@mui/material';
+import { Grid, Card, CardContent, Typography, Box, FormControl, Select, MenuItem, Button, FormControlLabel, Checkbox, FormGroup, } from '@mui/material';
 import { CartesianGrid, XAxis, YAxis, Tooltip, BarChart, Legend, Bar, Rectangle } from 'recharts';
 import { DatePicker } from '@mui/x-date-pickers';
 import dayjs from 'dayjs';
-
-
+import * as XLSX from 'xlsx';
 
 const originalData = [
     {
@@ -62,6 +61,26 @@ const ReportTab = () => {
     const [data, setFilteredData] = useState([]);
     const [barData, setFilteredBarData] = useState([]);
     const [[startingDate, endingDate], setDates] = useState([new Date(Date.now() - 7 * 24 * 60 * 60 * 1000), new Date()]);
+
+    const handleExportClick = async () => {
+        try {
+            // Create a new workbook
+            const workbook = XLSX.utils.book_new();
+
+            // Convert all data to a worksheet
+            const worksheet = XLSX.utils.json_to_sheet(data); // Assuming `data` is an array of objects
+            // Add the worksheet to the workbook with a descriptive name
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Exported Data");
+
+            // Generate the Excel file
+            XLSX.writeFile(workbook, "exported_data.xlsx");
+
+
+        } catch (error) {
+            console.error("Error exporting data to Excel:", error);
+            // Handle the error gracefully, e.g., display an error message to the user
+        }
+    };
 
     useEffect(() => {
         const filterData = () => {
@@ -146,7 +165,8 @@ const ReportTab = () => {
                     </FormControl>
                     <Box style={{ width: '20px' }} />
                     <Box display="flex" justifyContent="flex-end">
-                        <Button variant="contained" color="primary">Hepsini Dışarıya Aktar</Button>
+                        <Button variant="contained" color="primary" onClick={handleExportClick}>Hepsini Dışarıya Aktar</Button>
+
                     </Box>
                 </Grid>
             </Grid>

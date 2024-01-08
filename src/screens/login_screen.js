@@ -46,11 +46,74 @@ const SignIn = () => {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        setUser({
-            firstName: "test",
-            lastName: "test",
-            email: "test",
-            type: "fleetManager"
+        axios.get('http://localhost:5000/user/validate', {
+            params: {
+                username: values.username,
+                password: values.password,
+            }
+        }).then(response => {
+            // Handle successful response
+            const validate = response.data[0]["validate_user('" + values.username + "' , '" + values.password + "' )"];
+            switch (validate) {
+                case -1:
+                    alert("Kullanıcı adı veya şifre hatalı!");
+                    break;
+                case 0:
+                    alert("Şifre hatalı!");
+                    break;
+                case 1:
+                    axios.get('http://localhost:5000/user/getuserdata', {
+                        params: {
+                            username: values.username,
+                        }
+                    }).then(response => {
+                        // Handle successful response
+                        const userData = response.data[0][0];
+                        console.log(userData);
+                        switch (userData.tipi) {
+                            case "müşteri":
+                                setUser({
+                                    id: userData.kullanıcı_id,
+                                    firstName: userData.isim,
+                                    lastName: userData.soyisim,
+                                    email: userData.e_mail,
+                                    address: userData.teslimat_adresi,
+                                    type: userData.tipi
+                                });
+                                break;
+                            case "sürücü":
+                                setUser({
+                                    id: userData.kullanıcı_id,
+                                    firstName: userData.isim,
+                                    lastName: userData.soyisim,
+                                    type: userData.tipi
+                                });
+                                break;
+                            case "filoyöneticisi":
+                                setUser({
+                                    id: userData.kullanıcı_id,
+                                    firstName: userData.isim,
+                                    lastName: userData.soyisim,
+                                    type: userData.tipi
+                                });
+                                break;
+                            default:
+                                alert("Bilinmeyen bir hata oluştu!");
+                                break;
+                        }
+                    }).catch(error => {
+                        // Handle error
+                        console.error('Error:', error);
+                    });
+                    break;
+                default:
+                    alert("Bilinmeyen bir hata oluştu!");
+                    break;
+            }
+
+        }).catch(error => {
+            // Handle error
+            console.error('Error:', error);
         });
     };
 
@@ -70,18 +133,70 @@ const SignIn = () => {
                         }
                     })
                     .then((res) => {
-                        console.log(googleUser.access_token);
-                        console.log(res.data.given_name);
-                        console.log(res.data.family_name);
-                        console.log(res.data.email);
-                        setUser({
-                            firstName: res.data.given_name,
-                            lastName: res.data.family_name,
-                            email: res.data.email,
-                            type: "customer"
+                        axios.get('http://localhost:5000/user/validate', {
+                            params: {
+                                username: res.data.id,
+                                password: res.data.id,
+                            }
+                        }).then(response => {
+                            // Handle successful response
+                            const validate = response.data[0]["validate_user('" + res.data.id + "' , '" + res.data.id + "' )"];
+                            switch (validate) {
+                                case -1:
+                                    axios.get('http://localhost:5000/user/create', {
+                                        params: {
+                                            firstName: res.data.given_name,
+                                            lastName: res.data.family_name,
+                                            username: res.data.id,
+                                            password: res.data.id,
+                                            email: res.data.email,
+                                            address: null,
+                                        }
+                                    }).then(response => {
+                                        setUser({
+                                            id: res.data.id,
+                                            firstName: res.data.given_name,
+                                            lastName: res.data.family_name,
+                                            email: res.data.email,
+                                            address: null,
+                                            type: "müşteri"
+                                        });
+                                    }).catch(error => {
+                                        console.error('Error:', error);
+                                    });
+                                    break;
+                                case 1:
+                                    axios.get('http://localhost:5000/user/getuserdata', {
+                                        params: {
+                                            username: res.data.id,
+                                        }
+                                    }).then(response => {
+                                        // Handle successful response
+                                        const userData = response.data[0][0];
+                                        setUser({
+                                            id: res.data.kullanıcı_id,
+                                            firstName: res.data.isim,
+                                            lastName: res.data.soyisim,
+                                            email: res.data.e_mail,
+                                            address: userData.teslimat_adresi,
+                                            type: userData.tipi,
+                                        });
+                                    }).catch(error => {
+                                        // Handle error
+                                        console.error('Error:', error);
+                                    });
+                                    break;
+                                default:
+                                    alert("Bilinmeyen bir hata oluştu!");
+                                    break;
+                            }
+                        }).catch(error => {
+                            // Handle error
+                            console.error('Error:', error);
                         });
-                    })
-                    .catch((err) => console.log(err))
+                    }).catch((error) => {
+                        console.error(error);
+                    });
             }
         },
         [googleUser, setUser]

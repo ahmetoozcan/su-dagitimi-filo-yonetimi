@@ -11,6 +11,7 @@ import SignUp from './screens/signup_screen';
 import ErrorScreen from './screens/error_screen';
 import App from './App';
 import { GoogleOAuthProvider } from '@react-oauth/google';
+import { GoogleClientKey } from './google_client_key';
 
 const router = createBrowserRouter([
     {
@@ -36,7 +37,7 @@ const router = createBrowserRouter([
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-    <GoogleOAuthProvider clientId='679084525392-vkguunl4j7cnqod941khub7edd7cr01e.apps.googleusercontent.com'>
+    <GoogleOAuthProvider clientId={GoogleClientKey}>
         <RouterProvider router={router} />
     </GoogleOAuthProvider>
 );

@@ -33,9 +33,10 @@ const createNumberedIcon = (number, color) => {
 };
 
 const CreateRoutineMachineLayer = (props) => {
-    const { color, waypoints } = props;
-    const { setRoute } = useContext(RouteContext);
 
+    const { color, route, carLocation } = props;
+    const { setRoute } = useContext(RouteContext);
+    const waypoints = route.map(r => ({ lat: r.boylam, lng: r.enlem }))
     const onRouteClick = (route) => {
         // Update the selected route when a route is clicked
         setRoute(route);
@@ -44,21 +45,6 @@ const CreateRoutineMachineLayer = (props) => {
     const instance = L.Routing.control({
         waypoints: waypoints.map(wp => L.latLng(wp.lat, wp.lng)),
         createMarker: function (i, wp, nWps) {
-            if (i === 0) {
-                var driverMarker = L.marker(wp.latLng,
-                    {
-                        icon: L.icon({
-                            iconUrl: "https://img.icons8.com/color/48/000000/car--v1.png",
-                            iconSize: [24, 24],
-                            iconAnchor: [12, 12],
-                        }),
-                        draggable: true,
-                    });
-
-                driverMarker.bindPopup('Driver');
-
-                return driverMarker;
-            }
             var iconUrl = createNumberedIcon(i, color);
 
             var icon = L.icon({
@@ -73,7 +59,7 @@ const CreateRoutineMachineLayer = (props) => {
             });
 
             // Add a popup to the marker
-            marker.bindPopup('Marker ' + i);
+            marker.bindPopup(`${route}`);
 
             return marker;
         },
@@ -81,8 +67,8 @@ const CreateRoutineMachineLayer = (props) => {
             var line = L.Routing.line(route, {
                 styles: [{ color: color, weight: 4 }],
                 extendToWaypoints: false,
-                missingRouteTolerance: 0,
-                addWaypoints: false
+                addWaypoints: false,
+                smoothFactor: 0,
             });
             line.eachLayer((l) => {
                 l.on('click', (e) => {
@@ -91,16 +77,23 @@ const CreateRoutineMachineLayer = (props) => {
             });
             return line;
         },
+        router: L.Routing.osrmv1({
+            routingOptions: {
+                profile: 'driving',
+                continue_straight: false,
+            },
+            suppressDemoServerWarning: true,
+            language: 'tr',
+        }),
         lineOptions: {
             styles: [{ color: color, weight: 4 }],
         },
-        autoRoute: true,
         show: false,
         addWaypoints: false,
         routeWhileDragging: false,
-        draggableWaypoints: true,
+        draggableWaypoints: false,
         fitSelectedRoutes: false,
-        showAlternatives: false,
+        showAlternatives: true,
     });
 
     return instance;
