@@ -26,4 +26,4 @@ yarn-debug.log*
 yarn-error.log*
 
 # src files
-/src/google_client_key.js
+/src/google_client_key.json
