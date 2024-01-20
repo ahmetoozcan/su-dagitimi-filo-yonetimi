@@ -53,7 +53,7 @@ const SignIn = () => {
             }
         }).then(response => {
             // Handle successful response
-            const validate = response.data[0]["validate_user('" + values.username + "' , '" + values.password + "' )"];
+            const validate = response.data[0]["KullanıcıKontrol('" + values.username + "' , '" + values.password + "' )"];
             switch (validate) {
                 case -1:
                     alert("Kullanıcı adı veya şifre hatalı!");
@@ -69,7 +69,6 @@ const SignIn = () => {
                     }).then(response => {
                         // Handle successful response
                         const userData = response.data[0][0];
-                        console.log(userData);
                         switch (userData.tipi) {
                             case "müşteri":
                                 setUser({
@@ -140,7 +139,7 @@ const SignIn = () => {
                             }
                         }).then(response => {
                             // Handle successful response
-                            const validate = response.data[0]["validate_user('" + res.data.id + "' , '" + res.data.id + "' )"];
+                            const validate = response.data[0]["KullanıcıKontrol('" + res.data.id + "' , '" + res.data.id + "' )"];
                             switch (validate) {
                                 case -1:
                                     axios.get('http://localhost:5000/user/create', {
@@ -174,10 +173,10 @@ const SignIn = () => {
                                         // Handle successful response
                                         const userData = response.data[0][0];
                                         setUser({
-                                            id: res.data.kullanıcı_id,
-                                            firstName: res.data.isim,
-                                            lastName: res.data.soyisim,
-                                            email: res.data.e_mail,
+                                            id: userData.kullanıcı_id,
+                                            firstName: userData.isim,
+                                            lastName: userData.soyisim,
+                                            email: userData.e_mail,
                                             address: userData.teslimat_adresi,
                                             type: userData.tipi,
                                         });

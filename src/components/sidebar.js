@@ -10,6 +10,8 @@ import {
     Box
 } from '@mui/material';
 import { UserContext } from '../contexts/user_context';
+import { RouteContext } from '../contexts/route_context';
+import { Navigate } from 'react-router-dom';
 
 // Tabs
 import MainTab from '../screens/tabs/main_tab';
@@ -25,7 +27,6 @@ import ReportIcon from '../assets/report.png';
 import OrderIcon from '../assets/order.png';
 import CompassIcon from '../assets/compass.png';
 import LogoutIcon from '@mui/icons-material/Logout';
-import { Navigate } from 'react-router-dom';
 
 const drawerWidth = 100;
 
@@ -52,7 +53,7 @@ const MainContent = styled('main')(({ theme }) => ({
 const SidebarTabs = () => {
     const [tabValue, setTabValue] = useState(0);
     const { user, setUser } = useContext(UserContext);
-    const { setRoute } = useContext(UserContext);
+    const { setRoute } = useContext(RouteContext);
 
     const handleTabChange = (event, newValue) => {
         setTabValue(newValue);
@@ -87,7 +88,6 @@ const SidebarTabs = () => {
                                 className='sidebar-tabs'
                             >
                                 <Tab icon={<img src={CompassIcon} height={32} alt='Compass' />} label=<Typography fontSize={12} fontWeight={700}>ANA EKRAN</Typography> />
-
                                 {user.type === 'filoyöneticisi' && (
                                     [
                                         <Tab key={1} icon={<img src={DriverIcon} height={32} alt='Driver' />} label={<Typography fontSize={12} fontWeight={700}>SÜRÜCÜ</Typography>} value={1} />,

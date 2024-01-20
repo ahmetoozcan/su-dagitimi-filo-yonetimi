@@ -6,7 +6,10 @@ export const RouteProvider = ({ children }) => {
     const [route, setRoute] = useState(null);
 
     return (
-        <RouteContext.Provider value={{ route, setRoute }}>
+        <RouteContext.Provider
+            value={{
+                route, setRoute
+            }}>
             {children}
         </RouteContext.Provider>
     );

@@ -34,12 +34,13 @@ const createNumberedIcon = (number, color) => {
 
 const CreateRoutineMachineLayer = (props) => {
 
-    const { color, route, carLocation } = props;
+    const { color, routeInfo } = props;
     const { setRoute } = useContext(RouteContext);
-    const waypoints = route.map(r => ({ lat: r.boylam, lng: r.enlem }))
+    const waypoints = routeInfo.map(r => ({ lat: r.boylam, lng: r.enlem }))
     const onRouteClick = (route) => {
         // Update the selected route when a route is clicked
-        setRoute(route);
+
+        setRoute([route, routeInfo]);
     };
 
     const instance = L.Routing.control({
@@ -55,11 +56,10 @@ const CreateRoutineMachineLayer = (props) => {
 
             var marker = L.marker(wp.latLng, {
                 icon: icon,
-                draggable: true
+                draggable: false,
             });
 
             // Add a popup to the marker
-            marker.bindPopup(`${route}`);
 
             return marker;
         },
@@ -93,7 +93,7 @@ const CreateRoutineMachineLayer = (props) => {
         routeWhileDragging: false,
         draggableWaypoints: false,
         fitSelectedRoutes: false,
-        showAlternatives: true,
+        showAlternatives: false,
     });
 
     return instance;

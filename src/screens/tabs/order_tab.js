@@ -1,97 +1,56 @@
 import React, { useState, useEffect } from 'react';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Grid, Box, Button } from '@mui/material';
-import { DatePicker } from '@mui/x-date-pickers';
-import dayjs from 'dayjs';
+import axios from 'axios';
+import * as XLSX from 'xlsx';
 
 
-const originalData = [
-    {
-        id: 1,
-        address: '123 Main St',
-        location: '40.7128° N, 74.0060° W',
-        orderTime: '2022-01-01 10:00 AM',
-        deliveryWindow: '10:00 AM - 12:00 PM',
-        productName: 'Ürün A',
-        quantity: 2,
-        deliveryTime: '2022-01-01 11:30 AM',
-        deliveryVehicle: 'Araç 1',
-        status: 'Teslim Edildi'
-    },
-    {
-        id: 2,
-        address: '123 Main St',
-        location: '40.7128° N, 74.0060° W',
-        orderTime: '2022-01-01 10:00 AM',
-        deliveryWindow: '10:00 AM - 12:00 PM',
-        productName: 'Ürün A',
-        quantity: 2,
-        deliveryTime: '2022-01-01 11:30 AM',
-        deliveryVehicle: 'Araç 1',
-        status: 'Teslim Edildi'
-    },
-    {
-        id: 3,
-        address: '123 Main St',
-        location: '40.7128° N, 74.0060° W',
-        orderTime: '2022-01-01 10:00 AM',
-        deliveryWindow: '10:00 AM - 12:00 PM',
-        productName: 'Ürün A',
-        quantity: 2,
-        deliveryTime: '2022-01-01 11:30 AM',
-        deliveryVehicle: 'Araç 1',
-        status: 'Teslim Edildi'
-    },
-    {
-        id: 4,
-        address: '123 Main St',
-        location: '40.7128° N, 74.0060° W',
-        orderTime: '2022-01-01 10:00 AM',
-        deliveryWindow: '10:00 AM - 12:00 PM',
-        productName: 'Ürün A',
-        quantity: 2,
-        deliveryTime: '2022-01-01 11:30 AM',
-        deliveryVehicle: 'Araç 1',
-        status: 'Teslim Edildi'
-    },
-];
+const Status = {
+    0: 'Hazırlanıyor',
+    1: 'Yolda',
+    2: 'Tamamlandı',
+    3: 'İptal Edildi',
+};
 
 const OrderTab = () => {
-    const [[startingDate, endingDate], setDates] = useState([new Date(Date.now() - 7 * 24 * 60 * 60 * 1000), new Date()]);
-    const [data, setFilteredData] = useState([]);
+    const [data, setData] = useState([]);
 
     useEffect(() => {
-        const filterData = () => {
-            const filteredData = originalData.filter(item => {
-                const itemDate = dayjs(item.date, 'MM.DD.YYYY').toDate();
-                return itemDate >= startingDate && itemDate <= endingDate;
+        axios.get('http://localhost:5000/order/ordertab')
+            .then((response) => {
+                setData(response.data);
+            })
+            .catch((error) => {
+                console.error(error);
             });
+    }, []);
 
-            setFilteredData(filteredData);
-        };
-        filterData();
-    }, [startingDate, endingDate]);
+    const handleExportClick = async () => {
+        try {
+            const workbook = XLSX.utils.book_new();
+            const newData = data.map((order) => {
+                return {
+                    ...order,
+                    "durum": Status[order.durum],
+                }
+            });
+            const worksheet = XLSX.utils.json_to_sheet(newData);
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Exported Data");
 
-    const handleStartingDateChange = (newDate) => {
-        setDates([new Date(newDate).toLocaleDateString(), endingDate]);
-    }
+            XLSX.writeFile(workbook, "siparişler.xlsx");
 
-    const handleEndingDateChange = (newDate) => {
-        setDates([startingDate, new Date(newDate).toLocaleDateString()]);
-    }
 
+        } catch (error) {
+            console.error("Error exporting data to Excel:", error);
+        }
+    };
 
 
     return (
         <>
             <Grid item xs={12}>
                 <Grid container justifyContent="center">
-                    <DatePicker label="Başlangıç Zamanı" defaultValue={dayjs(new Date(Date.now() - 7 * 24 * 60 * 60 * 1000))} disableFuture={true} onChange={(newDate) => handleStartingDateChange(newDate)} />
-                    <Box style={{ width: '20px' }} />
-                    <DatePicker label="Bitiş Zamanı" defaultValue={dayjs(new Date())} disableFuture={true} onChange={(newDate) => handleEndingDateChange(newDate)} />
-                    <Box style={{ width: '20px' }} />
-                    <Box style={{ width: '20px' }} />
                     <Box display="flex" justifyContent="flex-end">
-                        <Button variant="contained" color="primary">Dışarıya Aktar</Button>
+                        <Button variant="contained" color="primary" onClick={handleExportClick}>Dışarıya Aktar</Button>
                     </Box>
                 </Grid>
             </Grid>
@@ -101,31 +60,27 @@ const OrderTab = () => {
                     <TableHead>
                         <TableRow>
                             <TableCell>ID</TableCell>
-                            <TableCell>Adres</TableCell>
-                            <TableCell>Konum</TableCell>
+                            <TableCell>Müşteri</TableCell>
                             <TableCell>Sipariş Zamanı</TableCell>
                             <TableCell>Teslim Zaman Penceresi</TableCell>
                             <TableCell>Ürün Adı</TableCell>
                             <TableCell>Adet</TableCell>
                             <TableCell>Teslim Zamanı</TableCell>
-                            <TableCell>Teslim Aracı</TableCell>
                             <TableCell>Durum</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
                         {data.map((order) => (
-                            <React.Fragment key={order.id}>
+                            <React.Fragment key={order.sipariş_id}>
                                 <TableRow>
-                                    <TableCell>{order.id}</TableCell>
-                                    <TableCell>{order.address}</TableCell>
-                                    <TableCell>{order.location}</TableCell>
-                                    <TableCell>{order.orderTime}</TableCell>
-                                    <TableCell>{order.deliveryWindow}</TableCell>
-                                    <TableCell>{order.productName}</TableCell>
-                                    <TableCell>{order.quantity}</TableCell>
-                                    <TableCell>{order.deliveryTime}</TableCell>
-                                    <TableCell>{order.deliveryVehicle}</TableCell>
-                                    <TableCell>{order.status}</TableCell>
+                                    <TableCell>{order.sipariş_id}</TableCell>
+                                    <TableCell>{order.kullanıcı_ismi + " " + order.soyisim}</TableCell>
+                                    <TableCell>{new Date(order.sipariş_tarihi).toLocaleDateString('tr-TR', { day: '2-digit', month: '2-digit', year: 'numeric' }) + " " + new Date(order.sipariş_tarihi).toLocaleTimeString()}</TableCell>
+                                    <TableCell>{`${order.teslim_aralık_baş} - ${order.teslim_aralık_son}`}</TableCell>
+                                    <TableCell>{order.marka_adı}</TableCell>
+                                    <TableCell>{order.ürün_sayısı}</TableCell>
+                                    <TableCell>{order.teslim_zamanı}</TableCell>
+                                    <TableCell>{Status[order.durum]}</TableCell>
                                 </TableRow>
                                 <TableRow>
                                     <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={8} />

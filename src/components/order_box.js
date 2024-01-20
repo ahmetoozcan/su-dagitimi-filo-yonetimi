@@ -13,7 +13,7 @@ import {
 const Status = {
     0: 'Hazırlanıyor',
     1: 'Yolda',
-    2: 'Tamamlandı',
+    2: 'Teslim Edildi',
     3: 'İptal Edildi',
 };
 
@@ -34,11 +34,12 @@ const BoxedComponent = (props) => {
                         <Grid item xs={12} md={4}>
                             <Typography variant="h6" sx={{ mb: 1 }}>Sipariş Detayları</Typography>
                             <Chip label={Status[order.durum]} sx={{ mr: 1 }} />
-                            <Typography variant="body2">{order.sipariş_tarihi}</Typography>
+                            <Typography variant="body2">Pencere</Typography>
+                            <Typography variant="body2">{order.teslim_aralık_baş + " " + order.teslim_aralık_son}</Typography>
                         </Grid>
                         <Grid item xs={12} md={4}>
                             <Typography variant="h6" sx={{ mb: 1 }}>Ürün</Typography>
-                            <Typography variant="body2">{order.marka_adı}</Typography>
+                            <Typography variant="body2">{order.marka_adı} Marka</Typography>
                             <Typography variant="body2">Adet: {order.ürün_sayısı}</Typography>
                         </Grid>
                         <Grid item xs={12} md={4}>

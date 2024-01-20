@@ -95,10 +95,8 @@ const SignUp = () => {
                     number: values.number
                 }
             }).then(response => {
-                console.log(response.data);
-                // create_user('asdsad', 'asdasdas', 'ahmet', 'komoro01', 'ahmet.komoro12@gmail.com', '120', NULL)
                 const responseData = response.data[0];
-                switch (responseData["create_user('" + values.firstName + "', '" + values.lastName + "', '" + values.username + "', '" + values.password + "', '" + values.email + "', '" + values.point + "', '" + values.number + "')"]) {
+                switch (responseData["KullanıcıOluştur('" + values.firstName + "', '" + values.lastName + "', '" + values.username + "', '" + values.password + "', '" + values.email + "', '" + values.point + "', '" + values.number + "')"]) {
                     case 0:
                         alert("Kullanıcı adı veya E-posta zaten kullanımda");
                         break;
@@ -218,7 +216,7 @@ const SignUp = () => {
                                 displayEmpty >
                                 {points.map((point) => (
                                     <MenuItem key={point.nokta_id} value={point.nokta_id}>
-                                        {point.name}
+                                        {point.isim}
                                     </MenuItem>
                                 ))}
                             </Select>

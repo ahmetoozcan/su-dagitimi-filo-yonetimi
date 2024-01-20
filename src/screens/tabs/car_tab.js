@@ -12,9 +12,11 @@ import {
     TableBody,
     Collapse,
     Box,
+    Button,
 } from '@mui/material';
 import axios from 'axios';
 import CustomTooltip from '../../components/car_tool_tip';
+import * as XLSX from 'xlsx';
 
 
 const CarTab = () => {
@@ -49,12 +51,26 @@ const CarTab = () => {
             });
     }, []);
 
+    const handleExportClick = async () => {
+        try {
+            const workbook = XLSX.utils.book_new();
+            const worksheet = XLSX.utils.json_to_sheet(data);
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Exported Data");
+
+            XLSX.writeFile(workbook, "araçlar.xlsx");
+        } catch (error) {
+            console.error("Error exporting data to Excel:", error);
+        }
+    };
+
     return (
         <>
-            <Grid item xs={12}>
+            <Grid container xs={12} direction="row">
                 <Typography variant="h4" gutterBottom>
                     Araç Filosu
                 </Typography>
+                <Box width={1350} />
+                <Button variant="contained" color="primary" onClick={handleExportClick}>Dışarıya Aktar</Button>
             </Grid>
             <TableContainer component={Paper}>
                 <Table>
@@ -81,7 +97,7 @@ const CarTab = () => {
                                     <TableCell>{car.maksimum_hız} km/h</TableCell>
                                     <TableCell>{car.batarya_kapasitesi} kWh</TableCell>
                                     <TableCell>{car.ağırlık} kg</TableCell>
-                                    <TableCell>{car.sonraki_bakım_tarihi.substring(0, 10)}</TableCell>
+                                    <TableCell>{new Date(car.sonraki_bakım_tarihi).toLocaleDateString('tr-TR', { day: '2-digit', month: '2-digit', year: 'numeric' })}</TableCell>
                                 </TableRow>
                                 <TableRow>
                                     <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={8}>
