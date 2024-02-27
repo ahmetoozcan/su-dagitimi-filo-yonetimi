@@ -38,10 +38,10 @@ const OrderCard = () => {
 
     const handleOrder = async () => {
         if (timeWindowStart > timeWindowEnd) {
-            alert("Başlangıç zamanı bitiş zamanından büyük olamaz!");
+            alert("Start time cannot be greater than end time!");
             return;
         } else if (timeWindowStart === null || timeWindowEnd === null) {
-            alert("Lütfen zaman aralığı seçiniz!");
+            alert("Please select a time window!");
             return;
         }
         console.log(timeWindowStart, timeWindowEnd)
@@ -84,14 +84,14 @@ const OrderCard = () => {
 
     return (
         <Card sx={{ maxWidth: 480, borderRadius: 4, boxShadow: '0px 2px 8px rgba(0, 0, 0, 0.15)' }}>
-            <CardHeader title={<Typography variant="h5">Sipariş</Typography>} />
+            <CardHeader title={<Typography variant="h5">Order</Typography>} />
             <Divider />
             <CardContent>
                 <Grid container spacing={2} alignItems="center">
                     <Grid item xs={12} md={6}>
                         <TimePicker
                             ampm={false}
-                            label="Başlangıç Zamanı"
+                            label="Starting Time"
                             onChange={(newValue) => {
                                 const time = new Date(newValue).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
                                 setTimeWindowStart(time);
@@ -101,7 +101,7 @@ const OrderCard = () => {
                     <Grid item xs={12} md={6}>
                         <TimePicker
                             ampm={false}
-                            label="Bitiş Zamanı"
+                            label="Ending Time"
                             onChange={(newValue) => {
                                 const time = new Date(newValue).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
                                 setTimeWindowEnd(time);
@@ -123,7 +123,7 @@ const OrderCard = () => {
                     </Grid>
                     <Grid item xs={12} md={6}>
                         <TextField
-                            label="Adet"
+                            label="Count"
                             type="number"
                             value={quantity}
                             onChange={(e) => { e.target.value < 1 ? setQuantity(1) : setQuantity(e.target.value) }}
@@ -131,7 +131,7 @@ const OrderCard = () => {
                     </Grid>
                     <Grid item xs={12} textAlign="center">
                         <Button variant="contained" onClick={handleOrder}>
-                            Sipariş Ver
+                            Order
                         </Button>
                     </Grid>
                 </Grid>

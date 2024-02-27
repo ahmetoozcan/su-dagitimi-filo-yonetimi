@@ -29,7 +29,7 @@ export default function ErrorScreen() {
         <ErrorPageContainer id="error-page">
             <ErrorTitle variant="h1">Oops!</ErrorTitle>
             <Typography variant="body1">
-                Üzgünüz, bilinmeyen bir hata oluştu.
+                Sorry, an unknown error occurred.
             </Typography>
             <ErrorMessage variant="body1">
                 <i>{error.statusText || error.message}</i>

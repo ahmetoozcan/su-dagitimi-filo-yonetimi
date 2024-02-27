@@ -5,10 +5,10 @@ import * as XLSX from 'xlsx';
 
 
 const Status = {
-    0: 'Hazırlanıyor',
-    1: 'Yolda',
-    2: 'Tamamlandı',
-    3: 'İptal Edildi',
+    0: 'Preparing',
+    1: 'On the way',
+    2: 'Delivered',
+    3: 'Cancelled',
 };
 
 const OrderTab = () => {
@@ -36,7 +36,7 @@ const OrderTab = () => {
             const worksheet = XLSX.utils.json_to_sheet(newData);
             XLSX.utils.book_append_sheet(workbook, worksheet, "Exported Data");
 
-            XLSX.writeFile(workbook, "siparişler.xlsx");
+            XLSX.writeFile(workbook, "orders.xlsx");
 
 
         } catch (error) {
@@ -50,7 +50,7 @@ const OrderTab = () => {
             <Grid item xs={12}>
                 <Grid container justifyContent="center">
                     <Box display="flex" justifyContent="flex-end">
-                        <Button variant="contained" color="primary" onClick={handleExportClick}>Dışarıya Aktar</Button>
+                        <Button variant="contained" color="primary" onClick={handleExportClick}>Export</Button>
                     </Box>
                 </Grid>
             </Grid>
@@ -60,13 +60,13 @@ const OrderTab = () => {
                     <TableHead>
                         <TableRow>
                             <TableCell>ID</TableCell>
-                            <TableCell>Müşteri</TableCell>
-                            <TableCell>Sipariş Zamanı</TableCell>
-                            <TableCell>Teslim Zaman Penceresi</TableCell>
-                            <TableCell>Ürün Adı</TableCell>
-                            <TableCell>Adet</TableCell>
-                            <TableCell>Teslim Zamanı</TableCell>
-                            <TableCell>Durum</TableCell>
+                            <TableCell>User</TableCell>
+                            <TableCell>Order Date</TableCell>
+                            <TableCell>Delivery Time Window</TableCell>
+                            <TableCell>Product Name</TableCell>
+                            <TableCell>Quantity</TableCell>
+                            <TableCell>Delivery Time</TableCell>
+                            <TableCell>Status</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -75,7 +75,7 @@ const OrderTab = () => {
                                 <TableRow>
                                     <TableCell>{order.sipariş_id}</TableCell>
                                     <TableCell>{order.kullanıcı_ismi + " " + order.soyisim}</TableCell>
-                                    <TableCell>{new Date(order.sipariş_tarihi).toLocaleDateString('tr-TR', { day: '2-digit', month: '2-digit', year: 'numeric' }) + " " + new Date(order.sipariş_tarihi).toLocaleTimeString()}</TableCell>
+                                    <TableCell>{new Date(order.sipariş_tarihi).toLocaleDateString('tr-TR', { day: '2-digit', month: '2-digit', year: 'numeric' })}</TableCell>
                                     <TableCell>{`${order.teslim_aralık_baş} - ${order.teslim_aralık_son}`}</TableCell>
                                     <TableCell>{order.marka_adı}</TableCell>
                                     <TableCell>{order.ürün_sayısı}</TableCell>

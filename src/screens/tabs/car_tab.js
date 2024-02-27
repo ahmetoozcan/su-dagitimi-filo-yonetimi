@@ -57,7 +57,7 @@ const CarTab = () => {
             const worksheet = XLSX.utils.json_to_sheet(data);
             XLSX.utils.book_append_sheet(workbook, worksheet, "Exported Data");
 
-            XLSX.writeFile(workbook, "araçlar.xlsx");
+            XLSX.writeFile(workbook, "vehicles.xlsx");
         } catch (error) {
             console.error("Error exporting data to Excel:", error);
         }
@@ -67,23 +67,23 @@ const CarTab = () => {
         <>
             <Grid container xs={12} direction="row">
                 <Typography variant="h4" gutterBottom>
-                    Araç Filosu
+                    Vehicle Fleet
                 </Typography>
                 <Box width={1350} />
-                <Button variant="contained" color="primary" onClick={handleExportClick}>Dışarıya Aktar</Button>
+                <Button variant="contained" color="primary" onClick={handleExportClick}>Export</Button>
             </Grid>
             <TableContainer component={Paper}>
                 <Table>
                     <TableHead>
                         <TableRow>
                             <TableCell>ID</TableCell>
-                            <TableCell>Plaka</TableCell>
-                            <TableCell>Maksimum Yük Kapasitesi</TableCell>
-                            <TableCell>Maksimum Motor Gücü</TableCell>
-                            <TableCell>Maksimum Hız</TableCell>
-                            <TableCell>Batarya Kapasitesi</TableCell>
-                            <TableCell>Ağırlık</TableCell>
-                            <TableCell>Sonraki Bakım Tarihi</TableCell>
+                            <TableCell>Plate</TableCell>
+                            <TableCell>Maximum Load Capacity</TableCell>
+                            <TableCell>Maximum Engine Power</TableCell>
+                            <TableCell>Maximum Speed</TableCell>
+                            <TableCell>Battery Capacity</TableCell>
+                            <TableCell>Weight</TableCell>
+                            <TableCell>Next Maintenance Date</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -108,11 +108,11 @@ const CarTab = () => {
                                                 })}>
                                                     <CartesianGrid strokeDasharray="3 3" />
                                                     <XAxis dataKey="tarih">
-                                                        <Label value="Tarih" offset={-3} position="insideBottom" />
+                                                        <Label value="Date" offset={-3} position="insideBottom" />
                                                     </XAxis>
                                                     <YAxis />
                                                     <Tooltip content={<CustomTooltip />} />
-                                                    <Line dataKey="maliyet" fill="#8884d8" name="Maliyet" />
+                                                    <Line dataKey="maliyet" fill="#8884d8" name="Cost" />
                                                 </LineChart>
                                             </Box>
                                         </Collapse>

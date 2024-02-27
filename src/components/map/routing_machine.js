@@ -59,8 +59,6 @@ const CreateRoutineMachineLayer = (props) => {
                 draggable: false,
             });
 
-            // Add a popup to the marker
-
             return marker;
         },
         routeLine: function (route, options) {

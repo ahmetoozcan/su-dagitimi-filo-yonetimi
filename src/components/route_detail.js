@@ -8,9 +8,9 @@ function formatTime(seconds) {
     const remainingSeconds = Math.floor(seconds % 60);
 
 
-    return hours === 0 ? `${minutes.toString().padStart(2, '0')} Dakika ${remainingSeconds.toString().padStart(2, '0')} Saniye` :
-        minutes === 0 ? `${remainingSeconds.toString().padStart(2, '0')} Saniye` :
-            `${hours.toString().padStart(2, '0')} Saat ${minutes.toString().padStart(2, '0')} Dakika ${remainingSeconds.toString().padStart(2, '0')} Saniye`;
+    return hours === 0 ? `${minutes.toString().padStart(2, '0')} Minute ${remainingSeconds.toString().padStart(2, '0')} Second` :
+        minutes === 0 ? `${remainingSeconds.toString().padStart(2, '0')} Second` :
+            `${hours.toString().padStart(2, '0')} Hour ${minutes.toString().padStart(2, '0')} Minute ${remainingSeconds.toString().padStart(2, '0')} Second`;
 }
 
 
@@ -54,16 +54,16 @@ const RouteDetails = ({ route }) => {
                             <Card>
                                 <CardContent>
                                     <Typography variant="h5" component="h2">
-                                        Rota Özeti
+                                        Route Detail
                                     </Typography>
                                     <Typography variant="body1">
-                                        Mesafe: {route[0].summary.totalDistance / 1000} km
+                                        Planned Distance: {route[0].summary.totalDistance / 1000} km
                                     </Typography>
                                     <Typography variant="body1">
-                                        Süre: {formatTime(route[0].summary.totalTime)}
+                                        Planned Time: {formatTime(route[0].summary.totalTime)}
                                     </Typography>
                                     <Typography variant="body1">
-                                        Dağıtımdaki Araç: {route[1][0].araç_id}
+                                        Vehicle in Distribution: {route[1][0].araç_id}
                                     </Typography>
                                 </CardContent>
                             </Card>
@@ -73,14 +73,20 @@ const RouteDetails = ({ route }) => {
                         <Card>
                             <CardContent>
                                 <Typography variant="h6" component="h3">
-                                    Nokta Konumları
+                                    Point Details
                                 </Typography>
                                 <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
                                     <div>
                                         {route[1].map((waypoint, index) => {
                                             return (
                                                 <Typography key={index} variant="body1" component="li">
-                                                    {index + 1}. {waypoint.isim === "EGITIM_FAK" ? "Depo" : waypoint.isim.startsWith("CS") ? "Şarj Noktası" : "Sipariş -> " + (orderInfo[index] ? orderInfo[index] !== null ? "Marka: " + orderInfo[index][0].marka_adı + ", Adet: " + orderInfo[index][0].ürün_sayısı + ", Teslim Penceresi: " + orderInfo[index][0].teslim_aralık_baş + "-" + orderInfo[index][0].teslim_aralık_son : "" : "")}
+                                                    {index + 1}. {waypoint.isim === "EGITIM_FAK" ?
+                                                        "Depot" : waypoint.isim.startsWith("CS") ?
+                                                            "Charging Point" : "Order -> " + (orderInfo[index] ? orderInfo[index] !== null ?
+                                                                "Brand: " + orderInfo[index][0].marka_adı +
+                                                                ", Count: " + orderInfo[index][0].ürün_sayısı +
+                                                                ", Time Window: " + orderInfo[index][0].teslim_aralık_baş +
+                                                                "-" + orderInfo[index][0].teslim_aralık_son : "" : "")}
                                                 </Typography>
                                             )
                                         })}

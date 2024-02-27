@@ -53,34 +53,34 @@ const SignUp = () => {
         const newErrors = {};
 
         if (values.firstName.length < 2) {
-            newErrors.firstName = 'İsim en az 2 arakter olmalıdır';
+            newErrors.firstName = 'First name must be at least 2 characters long';
         }
 
         if (values.lastName.length < 2) {
-            newErrors.lastName = 'Soyad en az 2 karakter olmalıdır';
+            newErrors.lastName = 'Last name must be at least 2 characters long';
         }
 
         if (values.username.length < 3) {
-            newErrors.username = 'Kullanıcı adı en az 3 karakter olmalıdır';
+            newErrors.username = 'Username must be at least 3 characters long';
         }
 
         if (values.password.length < 8) {
-            newErrors.password = 'Şifre en az 8 karakter olmalıdır';
+            newErrors.password = 'Password must be at least 8 characters long';
         }
 
         const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailPattern.test(values.email)) {
-            newErrors.email = values.email;
+            newErrors.email = 'Please enter a valid email address';
         }
+
         const numberPattern = /^5\d{9}$/;
         if (!numberPattern.test(values.number)) {
-            newErrors.email = 'Lütfen geçerli bir telefon numarası giriniz giriniz';
+            newErrors.email = 'Please enter a valid phone number';
         }
 
         if (values.point === '') {
-            alert("Lütfen adres seçiniz");
+            alert("Please select an address");
         }
-
         setErrors(newErrors);
 
         if (Object.keys(newErrors).length === 0) {
@@ -98,16 +98,15 @@ const SignUp = () => {
                 const responseData = response.data[0];
                 switch (responseData["KullanıcıOluştur('" + values.firstName + "', '" + values.lastName + "', '" + values.username + "', '" + values.password + "', '" + values.email + "', '" + values.point + "', '" + values.number + "')"]) {
                     case 0:
-                        alert("Kullanıcı adı veya E-posta zaten kullanımda");
+                        alert("Username or email is already in use!");
                         break;
                     case 1:
                         navigate('/login');
                         break;
                     default:
-                        alert("Bilinmeyen bir hata oluştu");
+                        alert("An unknown error occurred!");
                         break;
                 }
-
             }).catch(error => {
                 console.error('Error:', error);
             });
@@ -131,7 +130,7 @@ const SignUp = () => {
                 <StyledContainer component="main" maxWidth="xs">
                     <CssBaseline />
                     <Typography component="h1" variant="h4" align="center" fontWeight={600} fontSize={56}>
-                        Kayıt Ol
+                        Sign Up
                     </Typography>
                     <StyledForm onSubmit={(event) => validate(event)} >
                         <TextField
@@ -140,10 +139,10 @@ const SignUp = () => {
                             required
                             fullWidth
                             id="firstName"
-                            label="Ad"
+                            label="First Name"
                             value={values.firstName}
                             onChange={handleChange('firstName')}
-                            onInvalid={(e) => e.target.setCustomValidity("İsim boş olamaz.")}
+                            onInvalid={(e) => e.target.setCustomValidity("First Name cannot be empty.")}
                             onInput={(e) => e.target.setCustomValidity('')}
                         />
                         <TextField
@@ -152,10 +151,10 @@ const SignUp = () => {
                             required
                             fullWidth
                             id="lastName"
-                            label="Soyad"
+                            label="Last Name"
                             value={values.lastName}
                             onChange={handleChange('lastName')}
-                            onInvalid={(e) => e.target.setCustomValidity("Soyisim boş olamaz.")}
+                            onInvalid={(e) => e.target.setCustomValidity("Last Name cannot be empty.")}
                             onInput={(e) => e.target.setCustomValidity('')}
                         />
                         <TextField
@@ -164,10 +163,10 @@ const SignUp = () => {
                             required
                             fullWidth
                             id="email"
-                            label="E-Posta"
+                            label="E-Mail"
                             value={values.email}
                             onChange={handleChange('email')}
-                            onInvalid={(e) => e.target.setCustomValidity("E-posta boş olamaz.")}
+                            onInvalid={(e) => e.target.setCustomValidity("E-Mail cannot be empty.")}
                             onInput={(e) => e.target.setCustomValidity('')}
                         />
                         <TextField
@@ -176,10 +175,10 @@ const SignUp = () => {
                             required
                             fullWidth
                             id="number"
-                            label="Telefon Numarası"
+                            label="Number"
                             value={values.number}
                             onChange={handleChange('number')}
-                            onInvalid={(e) => e.target.setCustomValidity("Telefon Numarası boş olamaz.")}
+                            onInvalid={(e) => e.target.setCustomValidity("Number cannot be empty.")}
                             onInput={(e) => e.target.setCustomValidity('')}
                         />
                         <TextField
@@ -188,10 +187,10 @@ const SignUp = () => {
                             required
                             fullWidth
                             id="username"
-                            label="Kullanıcı Adı"
+                            label="Username"
                             value={values.username}
                             onChange={handleChange('username')}
-                            onInvalid={(e) => e.target.setCustomValidity("Kullanıcı adı boş olamaz.")}
+                            onInvalid={(e) => e.target.setCustomValidity("Username cannot be empty.")}
                             onInput={(e) => e.target.setCustomValidity('')}
                         />
                         <TextField
@@ -200,11 +199,11 @@ const SignUp = () => {
                             required
                             fullWidth
                             id="password"
-                            label="Şifre"
+                            label="Password"
                             type="password"
                             value={values.password}
                             onChange={handleChange('password')}
-                            onInvalid={(e) => e.target.setCustomValidity("Şifre boş olamaz.")}
+                            onInvalid={(e) => e.target.setCustomValidity("Password cannot be empty.")}
                             onInput={(e) => e.target.setCustomValidity('')}
                         />
                         <Box height={10} />
@@ -212,7 +211,7 @@ const SignUp = () => {
                             <Select
                                 value={values.point}
                                 onChange={handleChange('point')}
-                                renderValue={values.point !== "" ? undefined : () => <Placeholder>Adres Seçin</Placeholder>}
+                                renderValue={values.point !== "" ? undefined : () => <Placeholder>Select Address</Placeholder>}
                                 displayEmpty >
                                 {points.map((point) => (
                                     <MenuItem key={point.nokta_id} value={point.nokta_id}>
@@ -222,14 +221,14 @@ const SignUp = () => {
                             </Select>
                         </Grid>
                         <Button type="submit" fullWidth variant="contained" sx={{ mt: 2 }}>
-                            Kayıt Ol
+                            Sign Up
                         </Button>
                         <Grid container justifyContent="center" sx={{ mt: 4 }}>
                             <Grid item>
                                 <Typography variant="body2" fontWeight={600} fontSize={14}>
-                                    Hesabın var mı?{' '}
+                                    Do you have an account?{' '}
                                     <Link href="/login" variant="body2">
-                                        Giriş Yap
+                                        Login In
                                     </Link>
                                 </Typography>
                             </Grid>
@@ -263,7 +262,7 @@ const SignUp = () => {
                         textAlign: 'center', // Add this line
                     }}
                 >
-                    Su Dağıtımı Filo Yönetimi
+                    Water Delivery Fleet Management
                 </Typography>
             </Grid>
         </Grid>

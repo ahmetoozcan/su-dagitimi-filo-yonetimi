@@ -5,6 +5,7 @@ import { DatePicker } from '@mui/x-date-pickers';
 import dayjs from 'dayjs';
 import * as XLSX from 'xlsx';
 import axios from 'axios';
+import DriverTab from './driver_tab';
 
 const ReportTab = () => {
     const [timePeriod, setTimePeriod] = useState('day');
@@ -22,19 +23,19 @@ const ReportTab = () => {
 
 
             const routeSheet = XLSX.utils.json_to_sheet(routeData);
-            XLSX.utils.book_append_sheet(workbook, routeSheet, "Rota Verisi");
+            XLSX.utils.book_append_sheet(workbook, routeSheet, "Route Data");
 
             const worksheet = XLSX.utils.json_to_sheet(data);
-            XLSX.utils.book_append_sheet(workbook, worksheet, "Araç Verisi");
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Vehicle Data");
 
             const orderSheet = XLSX.utils.json_to_sheet(orderData);
-            XLSX.utils.book_append_sheet(workbook, orderSheet, "Sipariş Süresi");
+            XLSX.utils.book_append_sheet(workbook, orderSheet, "Order Duration");
 
             const chargeSheet = XLSX.utils.json_to_sheet(chargeData);
-            XLSX.utils.book_append_sheet(workbook, chargeSheet, "Şarj Süresi");
+            XLSX.utils.book_append_sheet(workbook, chargeSheet, "Charge Duration");
 
 
-            XLSX.writeFile(workbook, "bütün.xlsx");
+            XLSX.writeFile(workbook, "all.xlsx");
 
         } catch (error) {
             console.error("Error exporting data to Excel:", error);
@@ -47,15 +48,15 @@ const ReportTab = () => {
 
             // Create individual sheets with spacing
             const routeSheet = XLSX.utils.json_to_sheet(routeData);
-            XLSX.utils.book_append_sheet(workbook, routeSheet, "Rota Verisi");
+            XLSX.utils.book_append_sheet(workbook, routeSheet, "Route Data");
 
             const orderSheet = XLSX.utils.json_to_sheet(orderData);
-            XLSX.utils.book_append_sheet(workbook, orderSheet, "Sipariş Süresi");
+            XLSX.utils.book_append_sheet(workbook, orderSheet, "Order Duration");
 
             const chargeSheet = XLSX.utils.json_to_sheet(chargeData);
-            XLSX.utils.book_append_sheet(workbook, chargeSheet, "Şarj Süresi");
+            XLSX.utils.book_append_sheet(workbook, chargeSheet, "Charge Duration");
 
-            XLSX.writeFile(workbook, "rota.xlsx");
+            XLSX.writeFile(workbook, "route.xlsx");
 
         } catch (error) {
             console.error("Error exporting data to Excel:", error);
@@ -69,9 +70,9 @@ const ReportTab = () => {
             const workbook = XLSX.utils.book_new();
 
             const worksheet = XLSX.utils.json_to_sheet(data);
-            XLSX.utils.book_append_sheet(workbook, worksheet, "Araç Verisi");
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Vehicle Data");
 
-            XLSX.writeFile(workbook, "araç.xlsx");
+            XLSX.writeFile(workbook, "vehicle.xlsx");
 
 
         } catch (error) {
@@ -234,20 +235,20 @@ const ReportTab = () => {
         <>
             <Grid item xs={12}>
                 <Grid container justifyContent="center">
-                    <DatePicker label="Rapor Başlangıç Zamanı" defaultValue={dayjs(new Date(Date.now() - 7 * 24 * 60 * 60 * 1000))} disableFuture={true} onChange={(newDate) => handleStartingDateChange(newDate)} />
+                    <DatePicker label="Report Starting Date" defaultValue={dayjs(new Date(Date.now() - 7 * 24 * 60 * 60 * 1000))} disableFuture={true} onChange={(newDate) => handleStartingDateChange(newDate)} />
                     <Box style={{ width: '20px' }} />
-                    <DatePicker label="Rapor Bitiş Zamanı" defaultValue={dayjs(new Date())} disableFuture={true} onChange={(newDate) => handleEndingDateChange(newDate)} />
+                    <DatePicker label="Report Ending Date" defaultValue={dayjs(new Date())} disableFuture={true} onChange={(newDate) => handleEndingDateChange(newDate)} />
                     <Box style={{ width: '20px' }} />
                     <FormControl>
                         <Select value={timePeriod} onChange={handleTimePeriodChange}>
-                            <MenuItem value="day">Gün</MenuItem>
-                            <MenuItem value="week">Hafta</MenuItem>
-                            <MenuItem value="month">Ay</MenuItem>
+                            <MenuItem value="day">Daily</MenuItem>
+                            <MenuItem value="week">Weekly</MenuItem>
+                            <MenuItem value="month">Monthly</MenuItem>
                         </Select>
                     </FormControl>
                     <Box style={{ width: '20px' }} />
                     <Box display="flex" justifyContent="flex-end">
-                        <Button variant="contained" color="primary" onClick={handleExportClick}>Hepsini Dışarıya Aktar</Button>
+                        <Button variant="contained" color="primary" onClick={handleExportClick}>Export All</Button>
                     </Box>
                 </Grid>
             </Grid>
@@ -258,11 +259,11 @@ const ReportTab = () => {
                         <CardContent>
                             <Grid container spacing={2}>
                                 <Grid item xs={6}>
-                                    <Typography variant="h5">Rota</Typography>
+                                    <Typography variant="h5">Route</Typography>
                                 </Grid>
                                 <Grid item xs={6}>
                                     <Box display="flex" justifyContent="flex-end">
-                                        <Button variant="contained" color="primary" onClick={handleRouteExportClick}>Dışarıya Aktar</Button>
+                                        <Button variant="contained" color="primary" onClick={handleRouteExportClick}>Export</Button>
                                     </Box>
                                 </Grid>
                             </Grid>
@@ -281,9 +282,9 @@ const ReportTab = () => {
                                                 <YAxis />
                                                 <Tooltip />
                                                 <Legend />
-                                                <Bar dataKey="ToplamSipariş" name='Toplam Sipariş' fill="#8884d8" activeBar={<Rectangle fill="blue" stroke="blue" />} />
-                                                <Bar dataKey="ZamanındaUlaştırılanSipariş" name='Başarılı Sipariş' fill="#82ca9d" activeBar={<Rectangle fill="gold" stroke="blue" />} />
-                                                <Bar dataKey="ZamanındaUlaştırılamayanSipariş" name='Başarısız Sipariş' fill="red" activeBar={<Rectangle fill="green" stroke="blue" />} />
+                                                <Bar dataKey="ToplamSipariş" name='Total Orders' fill="#8884d8" activeBar={<Rectangle fill="blue" stroke="blue" />} />
+                                                <Bar dataKey="ZamanındaUlaştırılanSipariş" name='Successful Orders' fill="#82ca9d" activeBar={<Rectangle fill="gold" stroke="blue" />} />
+                                                <Bar dataKey="ZamanındaUlaştırılamayanSipariş" name='Failed Orders' fill="red" activeBar={<Rectangle fill="green" stroke="blue" />} />
                                             </BarChart>
                                         </CardContent>
                                     </Card>
@@ -291,7 +292,7 @@ const ReportTab = () => {
                                 <Grid item xs>
                                     <Card>
                                         <CardContent>
-                                            <Typography variant="h5">Toplam Sipariş</Typography>
+                                            <Typography variant="h5">Total Orders</Typography>
                                             <Typography>{routeData.reduce((sum, item) => sum + item.ToplamSipariş, 0)}</Typography>
                                         </CardContent>
                                     </Card>
@@ -299,7 +300,7 @@ const ReportTab = () => {
                                 <Grid item xs>
                                     <Card>
                                         <CardContent>
-                                            <Typography variant="h5">Başarılı Sipariş</Typography>
+                                            <Typography variant="h5">Successful Orders</Typography>
                                             <Typography>{routeData.reduce((sum, item) => sum + item.ZamanındaUlaştırılanSipariş, 0)}</Typography>
                                         </CardContent>
                                     </Card>
@@ -307,7 +308,7 @@ const ReportTab = () => {
                                 <Grid item xs>
                                     <Card>
                                         <CardContent>
-                                            <Typography variant="h5">Başarısız Sipariş</Typography>
+                                            <Typography variant="h5">Failed Orders</Typography>
                                             <Typography>{routeData.reduce((sum, item) => sum + item.ZamanındaUlaştırılamayanSipariş, 0)}</Typography>
                                         </CardContent>
                                     </Card>
@@ -315,7 +316,7 @@ const ReportTab = () => {
                                 <Grid item xs>
                                     <Card>
                                         <CardContent>
-                                            <Typography variant="h5">Toplam Ürün Ağırlığı</Typography>
+                                            <Typography variant="h5">Total Order Mass</Typography>
                                             <Typography>{routeData.reduce((sum, item) => sum + item.ZamanındaUlaştırılamayanSipariş, 0)} kg</Typography>
                                         </CardContent>
                                     </Card>
@@ -323,7 +324,7 @@ const ReportTab = () => {
                                 <Grid item xs>
                                     <Card>
                                         <CardContent>
-                                            <Typography variant="h5">Toplam Ürün Adedi</Typography>
+                                            <Typography variant="h5">Total Product Count</Typography>
                                             <Typography>{routeData.reduce((sum, item) => sum + item.TeslimEdilenToplamÜrünSayısı, 0)}</Typography>
                                         </CardContent>
                                     </Card>
@@ -331,16 +332,16 @@ const ReportTab = () => {
                                 <Grid item xs>
                                     <Card>
                                         <CardContent>
-                                            <Typography variant="h5">Siparişlerde Harcanan Süre</Typography>
-                                            <Typography>{(orderData.reduce((sum, item) => sum + item.SiparişToplamHarcananSüre, 0) / 60).toFixed(2)} Saat </Typography>
+                                            <Typography variant="h5">Time Spent on Orders</Typography>
+                                            <Typography>{(orderData.reduce((sum, item) => sum + item.SiparişToplamHarcananSüre, 0) / 60).toFixed(2)} Hour </Typography>
                                         </CardContent>
                                     </Card>
                                 </Grid>
                                 <Grid item xs>
                                     <Card>
                                         <CardContent>
-                                            <Typography variant="h5">Şarj İstasyonlarında Harcanan Süre</Typography>
-                                            <Typography>{(chargeData.reduce((sum, item) => sum + item.ŞarjİstasyonundaToplamHarcananSüre, 0) / 60).toFixed(2)} Saat</Typography>
+                                            <Typography variant="h5">Time Spent at Charging Stations</Typography>
+                                            <Typography>{(chargeData.reduce((sum, item) => sum + item.ŞarjİstasyonundaToplamHarcananSüre, 0) / 60).toFixed(2)} Hour</Typography>
                                         </CardContent>
                                     </Card>
                                 </Grid>
@@ -353,7 +354,7 @@ const ReportTab = () => {
                         <CardContent>
                             <Grid container spacing={2}>
                                 <Grid item xs>
-                                    <Typography variant="h5">Araç</Typography>
+                                    <Typography variant="h5">Vehicle</Typography>
                                 </Grid>
                                 <Grid item xs>
                                     <Box display="flex" justifyContent="center">
@@ -372,7 +373,7 @@ const ReportTab = () => {
                                 </Grid>
                                 <Grid item xs>
                                     <Box display="flex" justifyContent="flex-end">
-                                        <Button variant="contained" color="primary" onClick={handleAraçExportClick}>Dışarıya Aktar</Button>
+                                        <Button variant="contained" color="primary" onClick={handleAraçExportClick}>Export</Button>
                                     </Box>
                                 </Grid>
                             </Grid>
@@ -391,8 +392,8 @@ const ReportTab = () => {
                                                 <YAxis />
                                                 <Tooltip />
                                                 <Legend />
-                                                <Bar dataKey="KatedilenToplamYol" name='Toplam Alınan Mesafe' fill="#8884d8" activeBar={<Rectangle fill="blue" stroke="blue" />} />
-                                                <Bar dataKey="ToplamÇalışmaSaati" name='Toplam Sürüş Süresi' fill="red" activeBar={<Rectangle fill="green" stroke="blue" />} />
+                                                <Bar dataKey="KatedilenToplamYol" name='Total Distance Traveled' fill="#8884d8" activeBar={<Rectangle fill="blue" stroke="blue" />} />
+                                                <Bar dataKey="ToplamÇalışmaSaati" name='Total Driving Time' fill="red" activeBar={<Rectangle fill="green" stroke="blue" />} />
                                             </BarChart>
                                         </CardContent>
                                     </Card>
@@ -400,7 +401,7 @@ const ReportTab = () => {
                                 <Grid item xs>
                                     <Card>
                                         <CardContent>
-                                            <Typography variant="h5">Toplam Alınan Mesafe</Typography>
+                                            <Typography variant="h5">Total Distance Traveled</Typography>
                                             <Typography>{((data.reduce((sum, item) => sum + item.KatedilenToplamYol, 0)) / 1000).toFixed(2)} km</Typography>
                                         </CardContent>
                                     </Card>
@@ -408,7 +409,7 @@ const ReportTab = () => {
                                 <Grid item xs>
                                     <Card>
                                         <CardContent>
-                                            <Typography variant="h5">Toplam Tüketilen Enerji</Typography>
+                                            <Typography variant="h5">Total Energy Consumption</Typography>
                                             <Typography>{((data.reduce((sum, item) => sum + item.ToplamEnerjiTüketimi, 0)) / 1000).toFixed(2)} kW</Typography>
                                         </CardContent>
                                     </Card>
@@ -416,16 +417,16 @@ const ReportTab = () => {
                                 <Grid item xs>
                                     <Card>
                                         <CardContent>
-                                            <Typography variant="h5">Toplam Sürüş Süresi</Typography>
-                                            <Typography>{parseFloat(data.reduce((sum, item) => sum + parseFloat(item.ToplamÇalışmaSaati), 0)).toFixed(2)} saat</Typography>
+                                            <Typography variant="h5">Total Driving Time</Typography>
+                                            <Typography>{parseFloat(data.reduce((sum, item) => sum + parseFloat(item.ToplamÇalışmaSaati), 0)).toFixed(2)} Hour</Typography>
                                         </CardContent>
                                     </Card>
                                 </Grid>
                                 <Grid item xs>
                                     <Card>
                                         <CardContent>
-                                            <Typography variant="h5">Toplam Şarj Süresi</Typography>
-                                            <Typography>{(parseFloat(data.reduce((sum, item) => sum + parseFloat(item.ToplamŞarjSüresi), 0)) / 60).toFixed(2)} saat</Typography>
+                                            <Typography variant="h5">Total Charging Time</Typography>
+                                            <Typography>{(parseFloat(data.reduce((sum, item) => sum + parseFloat(item.ToplamŞarjSüresi), 0)) / 60).toFixed(2)} Hour</Typography>
                                         </CardContent>
                                     </Card>
                                 </Grid>
@@ -434,6 +435,12 @@ const ReportTab = () => {
                     </Card>
                 </Grid>
             </Grid>
+            <Box height={20} />
+            <DriverTab
+                startingDate={startingDate}
+                endingDate={endingDate}
+                timePeriod={timePeriod}
+            />
         </>
     );
 };

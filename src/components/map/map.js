@@ -1,11 +1,12 @@
 import 'leaflet/dist/leaflet.css';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import { MapContainer, TileLayer, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import RoutingMachine from './routing_machine';
 import { useContext, useEffect, useState } from 'react';
 import axios from 'axios';
 import L from 'leaflet';
 import { UserContext } from '../../contexts/user_context';
+import ReactLeafletDriftMarker from "react-leaflet-drift-marker"
 
 const colorSet = [
     "rgb(0,183,199)",
@@ -19,9 +20,9 @@ const colorSet = [
     "rgb(11,140,231)"
 ];
 
-function Map({ height }) {
+function Map({ height, vehicles }) {
     const [routes, setRoutes] = useState([null, null, null, null, null]);
-    const [carLocations, setCarLocations] = useState([]);
+    const [carLocations, setCarLocations] = useState([null, null, null, null, null]);
     const { user } = useContext(UserContext);
 
 
@@ -36,6 +37,16 @@ function Map({ height }) {
                 }
             });
             setRoutes(updatedRoutes);
+        }
+        const setNewVehicleLocations = (newCarLocations) => {
+            const updatedVehicleLocations = [null, null, null, null, null];
+            newCarLocations.forEach((carLocation, index) => {
+                const vehicleLocationIndex = parseInt(carLocation['araç_id'][4]);
+                if (vehicleLocationIndex !== -1) {
+                    updatedVehicleLocations[vehicleLocationIndex] = carLocation;
+                }
+            });
+            setCarLocations(updatedVehicleLocations);
         }
 
         setInterval(() => {
@@ -52,7 +63,7 @@ function Map({ height }) {
                                 setCarLocations([]);
                                 return;
                             }
-                            setCarLocations(response.data[0]);
+                            setNewVehicleLocations(response.data[0]);
                         })
                         .catch(error => {
                             console.error('Error:', error);
@@ -62,7 +73,7 @@ function Map({ height }) {
                     axios
                         .get('http://localhost:5000/vehicle/tracking')
                         .then(response => {
-                            setCarLocations(response.data);
+                            setNewVehicleLocations(response.data);
                         })
                         .catch(error => {
                             console.error('Error:', error);
@@ -76,7 +87,7 @@ function Map({ height }) {
                             }
                         })
                         .then(response => {
-                            setCarLocations(response.data[0]);
+                            setNewVehicleLocations(response.data[0]);
                         }
                         ).catch(error => {
                             console.error('Error:', error);
@@ -125,7 +136,6 @@ function Map({ height }) {
                             const newRoutes = uniqueRoutes.map(route => routes
                                 .filter(r => r.rota_id === route)
                             );
-                            console.log(newRoutes)
                             setNewRoutes(newRoutes);
                         })
                         .catch(error => {
@@ -139,6 +149,7 @@ function Map({ height }) {
 
     }, [user.id, user.type]);
 
+
     return (
         <MapContainer center={[39.75074524577661, 30.482254032492538]} zoom={16} style={{ height: height }} >
             <TileLayer
@@ -146,37 +157,41 @@ function Map({ height }) {
                 url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
             />
             {carLocations.length !== 0 && carLocations.map((carLocation, index) => {
-                return (
-                    <Marker
-                        key={index}
-                        position={[carLocation.boylam, carLocation.enlem]}
-                        zIndexOffset={1000}
-                        icon={
-                            L.icon({
-                                iconUrl: "https://img.icons8.com/color/48/000000/car--v1.png",
-                                iconSize: [24, 24],
-                                iconAnchor: [12, 12],
-                            })}
-
-                    >
-                        <Popup>
-                            <div>
-                                <p>Araç ID: {carLocation.araç_id}</p>
-                                <p>Sürücü ID: {carLocation.sürücü_id}</p>
-                            </div>
-                        </Popup>
-                    </Marker>
-                )
+                if (carLocation !== null && vehicles[index] !== false) {
+                    return (
+                        <ReactLeafletDriftMarker
+                            key={index}
+                            position={[carLocation.boylam, carLocation.enlem]}
+                            zIndexOffset={1000}
+                            icon={
+                                L.icon({
+                                    iconUrl: "https://img.icons8.com/color/48/000000/car--v1.png",
+                                    iconSize: [24, 24],
+                                    iconAnchor: [12, 12],
+                                })}
+                            duration={500}
+                        >
+                            <Popup>
+                                <div>
+                                    <p>Araç ID: {carLocation.araç_id}</p>
+                                </div>
+                            </Popup>
+                        </ReactLeafletDriftMarker>
+                    )
+                } else {
+                    return null;
+                }
             })
             }
             {routes.length !== 0 && routes.map((ref, index) => {
                 if (ref !== null) {
-                    return (
+                    return (<>
                         <RoutingMachine
                             key={index} // Use a unique key for each component
                             color={colorSet[index]} // Assign colors dynamically
                             routeInfo={routes[index]}
                         />
+                    </>
                     )
                 } else {
                     return null;

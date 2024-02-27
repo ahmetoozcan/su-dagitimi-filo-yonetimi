@@ -15,20 +15,18 @@ import { Navigate } from 'react-router-dom';
 
 // Tabs
 import MainTab from '../screens/tabs/main_tab';
-import DriverTab from '../screens/tabs/driver_tab';
 import ReportTab from '../screens/tabs/report_tab';
 import CarTab from '../screens/tabs/car_tab';
 import OrderTab from '../screens/tabs/order_tab';
 
 // Tab Icons
 import CarIcon from '../assets/car.png';
-import DriverIcon from '../assets/driver.png';
 import ReportIcon from '../assets/report.png';
 import OrderIcon from '../assets/order.png';
 import CompassIcon from '../assets/compass.png';
 import LogoutIcon from '@mui/icons-material/Logout';
 
-const drawerWidth = 100;
+const drawerWidth = 120;
 
 const Root = styled('div')({
     display: 'flex',
@@ -87,13 +85,15 @@ const SidebarTabs = () => {
                                 indicatorColor='primary'
                                 className='sidebar-tabs'
                             >
-                                <Tab icon={<img src={CompassIcon} height={32} alt='Compass' />} label=<Typography fontSize={12} fontWeight={700}>ANA EKRAN</Typography> />
+                                <Tab
+                                    icon={<img src={CompassIcon} height={32} alt={'Main'} />}
+                                    label={<Typography fontSize={12} fontWeight={700}>{user.type === 'filoyöneticisi' ? 'FLEET' : 'MAIN'}<br /> {user.type === "filoyöneticisi" ? 'MONITORING' : 'SCREEN'}</Typography>}
+                                />
                                 {user.type === 'filoyöneticisi' && (
                                     [
-                                        <Tab key={1} icon={<img src={DriverIcon} height={32} alt='Driver' />} label={<Typography fontSize={12} fontWeight={700}>SÜRÜCÜ</Typography>} value={1} />,
-                                        <Tab key={2} icon={<img src={CarIcon} height={32} alt='Car' />} label={<Typography fontSize={12} fontWeight={700}>ARAÇ</Typography>} value={2} />,
-                                        <Tab key={3} icon={<img src={ReportIcon} height={32} alt='Report' />} label={<Typography fontSize={12} fontWeight={700}>RAPOR</Typography>} value={3} />,
-                                        <Tab key={4} icon={<img src={OrderIcon} height={32} alt='Order' />} label={<Typography fontSize={12} fontWeight={700}>SİPARİŞ</Typography>} value={4} />
+                                        <Tab key={1} icon={<img src={ReportIcon} height={32} alt='Report' />} label={<Typography fontSize={12} fontWeight={700}>PERFORMANCE<br /> MONITORING</Typography>} value={1} />,
+                                        <Tab key={2} icon={<img src={CarIcon} height={32} alt='Car' />} label={<Typography fontSize={12} fontWeight={700}>VEHICLES</Typography>} value={2} />,
+                                        <Tab key={3} icon={<img src={OrderIcon} height={32} alt='Order' />} label={<Typography fontSize={12} fontWeight={700}>ORDERS</Typography>} value={3} />
                                     ]
                                 )}
                             </Tabs>
@@ -103,7 +103,7 @@ const SidebarTabs = () => {
                                         <LogoutIcon fontSize='large' color='action' />
                                     </IconButton>
                                     <Typography variant="caption" display="block" align="center" fontSize={12} fontWeight={700} color={'#676767'}>
-                                        ÇIKIŞ
+                                        EXIT
                                     </Typography>
                                 </Box>
                             </Toolbar>
@@ -113,10 +113,9 @@ const SidebarTabs = () => {
                         <div style={{ display: tabValue === 0 ? 'block' : 'none' }}>
                             <MainTab />
                         </div>
-                        {tabValue === 1 && <DriverTab />}
+                        {tabValue === 1 && <ReportTab />}
                         {tabValue === 2 && <CarTab />}
-                        {tabValue === 3 && <ReportTab />}
-                        {tabValue === 4 && <OrderTab />}
+                        {tabValue === 3 && <OrderTab />}
                     </MainContent>
                 </Root>
                     :

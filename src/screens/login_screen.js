@@ -56,10 +56,10 @@ const SignIn = () => {
             const validate = response.data[0]["KullanıcıKontrol('" + values.username + "' , '" + values.password + "' )"];
             switch (validate) {
                 case -1:
-                    alert("Kullanıcı adı veya şifre hatalı!");
+                    alert("Invalid username or password!");
                     break;
                 case 0:
-                    alert("Şifre hatalı!");
+                    alert("Invalid password!");
                     break;
                 case 1:
                     axios.get('http://localhost:5000/user/getuserdata', {
@@ -97,7 +97,7 @@ const SignIn = () => {
                                 });
                                 break;
                             default:
-                                alert("Bilinmeyen bir hata oluştu!");
+                                alert("An unknown error occured!");
                                 break;
                         }
                     }).catch(error => {
@@ -106,7 +106,7 @@ const SignIn = () => {
                     });
                     break;
                 default:
-                    alert("Bilinmeyen bir hata oluştu!");
+                    alert("An unknown error occured!");
                     break;
             }
 
@@ -186,7 +186,7 @@ const SignIn = () => {
                                     });
                                     break;
                                 default:
-                                    alert("Bilinmeyen bir hata oluştu!");
+                                    alert("An unknown error occured!");
                                     break;
                             }
                         }).catch(error => {
@@ -211,7 +211,7 @@ const SignIn = () => {
                     <StyledContainer component="main" maxWidth="xs">
                         <CssBaseline />
                         <Typography component="h1" variant="h4" align="center" fontWeight={600} fontSize={56}>
-                            Giriş Yap
+                            Login In
                         </Typography>
                         <StyledForm onSubmit={handleSubmit}>
                             <TextField
@@ -219,7 +219,7 @@ const SignIn = () => {
                                 required
                                 fullWidth
                                 id="username"
-                                label="Kullanıcı Adı"
+                                label="Username"
                                 value={values.username}
                                 onChange={handleChange('username')}
                             />
@@ -228,18 +228,18 @@ const SignIn = () => {
                                 required
                                 fullWidth
                                 id="password"
-                                label="Şifre"
+                                label="Password"
                                 type={values.showPassword ? 'text' : 'password'}
                                 value={values.password}
                                 onChange={handleChange('password')}
                             />
                             <Button type="submit" fullWidth variant="contained" sx={{ mt: 2 }} onClick={() => user == null ? console.log("user is null ") : console.log(user.firstName)}>
-                                Giriş Yap
+                                Login In
                             </Button>
                             <Grid container justifyContent="center" sx={{ mt: 2 }}>
                                 <Grid item>
                                     <Typography variant="body2" fontWeight={600} fontSize={14}>
-                                        Ya da şununla devam et
+                                        Or Continue With
                                     </Typography>
                                 </Grid>
                             </Grid>
@@ -253,9 +253,9 @@ const SignIn = () => {
                             <Grid container justifyContent="center" sx={{ mt: 4 }}>
                                 <Grid item>
                                     <Typography variant="body2" fontWeight={600} fontSize={14}>
-                                        Hesabın yok mu?{' '}
+                                        Don't have an account?{' '}
                                         <Link href="/signup" variant="body2">
-                                            Kaydol
+                                            Sign Up
                                         </Link>
                                     </Typography>
                                 </Grid>
@@ -289,7 +289,7 @@ const SignIn = () => {
                             textAlign: 'center', // Add this line
                         }}
                     >
-                        Su Dağıtımı Filo Yönetimi
+                        Water Delivery Fleet Management
                     </Typography>
                 </Grid>
             </Grid>
