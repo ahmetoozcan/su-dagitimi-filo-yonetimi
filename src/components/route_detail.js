@@ -80,7 +80,7 @@ const RouteDetails = ({ route }) => {
                                         {route[1].map((waypoint, index) => {
                                             return (
                                                 <Typography key={index} variant="body1" component="li">
-                                                    {index + 1}. {waypoint.isim === "EGITIM_FAK" ?
+                                                    {index + 1}. {waypoint.isim === "CS_CARSI" ?
                                                         "Depot" : waypoint.isim.startsWith("CS") ?
                                                             "Charging Point" : "Order -> " + (orderInfo[index] ? orderInfo[index] !== null ?
                                                                 "Brand: " + orderInfo[index][0].marka_adı +
